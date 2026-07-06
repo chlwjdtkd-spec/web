@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Guide</title>
+    <!-- 고급스러운 명조체와 깔끔한 고딕체 폰트 불러오기 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Noto+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    
+    <style>
+        /* 💡 PC 웹 브라우저에서 보더라도 모바일 폰 규격을 유지하도록 전체 배경 제어 */
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #eaeaea; /* PC로 볼 때 폰 바깥쪽 배경색 (원하는 색상으로 변경 가능) */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* 💡 메인 컨테이너를 모바일 폰 규격(최대 430px)으로 가두고 중앙에 고정 */
+        .main-container {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            width: 100%;
+            max-width: 430px; /* 💡 아이폰/갤럭시 등 모바일 너비로 강제 고정 */
+            height: 100vh;
+            max-height: 932px; /* 💡 일반적인 모바일 세로 길이 제한 */
+            /* 기존 styles.css의 배경 그라데이션이 있다면 여기도 유지되도록 처리 (혹은 덮어쓰기 가능) */
+            background: linear-gradient(180deg, #e3daf5 0%, #fdf5eb 30%, #f3e6da 100%); 
+            padding: 70px 24px 30px 24px; 
+            box-sizing: border-box;
+            box-shadow: 0 0 30px rgba(0,0,0,0.08); /* PC에서 볼 때 폰 느낌이 나도록 은은한 그림자 추가 */
+        }
+
+        .main-header {
+            margin: 0;
+            text-align: center;
+        }
+        
+        .info-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            margin: 40px 0; /* 타이틀과 카드 사이의 간격을 시안과 유사하게 고정 */
+        }
+
+        .menu-grid {
+            width: 100%;
+        }
+
+        /* 카드 클릭/터치 시 반응 효과 */
+        .menu-card {
+            transition: transform 0.1s ease-in-out, background-color 0.2s ease;
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .menu-card:active {
+            transform: scale(0.95);
+        }
+        
+        /* 우측 상단 버튼 고정 */
+        .top-buttons {
+            position: absolute;
+            top: 24px;
+            right: 24px;
+            display: flex;
+            gap: 8px;
+            z-index: 10001;
+        }
+        
+        /* 전체 화면을 덮는 가상의 빈 상세 페이지 레이어 */
+        .detail-page {
+            position: fixed;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 430px;
+            height: 100vh;
+            background-color: #f4eae1;
+            z-index: 10000;
+            display: none;
+            flex-direction: column;
+            padding: 20px 24px;
+            box-sizing: border-box;
+        }
+        
+        /* 왼쪽 상단 뒤로가기 이미지 버튼 영역 */
+        .detail-header {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            width: 100%;
+            height: 50px;
+            margin-top: 40px;
+        }
+        .back-btn {
+            background: none;
+            border: none;
+            padding: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            -webkit-tap-highlight-color: transparent;
+            transition: transform 0.1s ease;
+        }
+        .back-btn:active {
+            transform: scale(0.85);
+        }
+        .back-btn svg {
+            width: 24px;
+            height: 24px;
+        }
+        
+        /* 빈 내부 화면 구역 */
+        .detail-content {
+            flex-grow: 1;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+    <!-- 전체 배경을 감싸는 컨테이너 -->
+    <div class="main-container">
+        
+        <!-- 우측 상단 버튼 그룹 -->
+        <div class="top-buttons">
+            <button class="nav-btn">WIFI</button>
+            <button class="nav-btn">Language</button>
+        </div>
+
+        <!-- 메인 타이틀 영역 -->
+        <header class="main-header">
+            <h1 class="brand-title">Your Guide</h1>
+            <p class="brand-subtitle" id="text-subtitle">언제나 당신 곁의 가이드</p>
+        </header>
+
+        <!-- 중간 정보 영역 (환영 메시지 + 날씨 정보) -->
+        <div class="info-section">
+            <div class="welcome-box">
+                <h2 id="text-welcome-title">환영합니다!</h2>
+                <p id="text-welcome-sub">가이드와 함께하세요</p>
+            </div>
+            
+            <div class="weather-card">
+                <div class="weather-left">
+                    <svg class="weather-icon" viewBox="0 0 24 24" fill="none" stroke="#6e5a4b" stroke-width="1.5">
+                        <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>
+                        <path d="M12 16a4 4 0 1 0 0-8 4 4 0 0 0 0 8z" fill="#fdfaf6"/>
+                        <path d="M16 14a3 3 0 0 1 0 6H9a4 4 0 0 1 0-8h1a4 4 0 0 1 7 2z" fill="#fdfaf6" stroke="#6e5a4b" stroke-width="1.5"/>
+                    </svg>
+                    <span class="temperature">24°C</span>
+                </div>
+                <div class="weather-right">
+                    <span class="location" id="text-location">제주 서귀포시</span>
+                    <span class="sky" id="text-sky">구름 많음</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 하단 2x2 메뉴 카드 그리드 -->
+        <div class="menu-grid">
+            <!-- 1. 호텔 정보 -->
+            <div class="menu-card" data-page="hotel">
+                <div class="card-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#6e5a4b" stroke-width="1.2">
+                        <rect x="5" y="2" width="14" height="20" rx="1"/>
+                        <rect x="8" y="5" width="2" height="2"/><rect x="14" y="5" width="2" height="2"/>
+                        <rect x="8" y="9" width="2" height="2"/><rect x="14" y="9" width="2" height="2"/>
+                        <rect x="8" y="13" width="2" height="2"/><rect x="14" y="13" width="2" height="2"/>
+                        <path d="M10 22v-4h4v4"/>
+                    </svg>
+                </div>
+                <div class="card-bottom">
+                    <span class="card-title" id="text-card1">호텔 정보</span>
+                    <span class="arrow">&gt;</span>
+                </div>
+            </div>
+
+            <!-- 2. 관광 명소 -->
+            <div class="menu-card" data-page="attractions">
+                <div class="card-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#6e5a4b" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="5" y="5" width="4" height="11" rx="1.5"/>
+                        <path d="M4 16h6v2H4z"/>
+                        <rect x="15" y="5" width="4" height="11" rx="1.5"/>
+                        <path d="M14 16h6v2H4z"/>
+                        <path d="M9 9h6M9 13h6"/>
+                        <rect x="11" y="7" width="2" height="3" rx="0.5"/>
+                    </svg>
+                </div>
+                <div class="card-bottom">
+                    <span class="card-title" id="text-card2">관광 명소</span>
+                    <span class="arrow">&gt;</span>
+                </div>
+            </div>
+
+            <!-- 3. 맛집 지도 -->
+            <div class="menu-card" data-page="food">
+                <div class="card-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#6e5a4b" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M7 4c-1.5 0-3 1.5-3 3.5S5.5 11 7 11s3-1.5 3-3.5S8.5 4 7 4z"/>
+                        <path d="M7 11v10"/>
+                        <path d="M14 3l2 18M17 3l-1 18"/>
+                    </svg>
+                </div>
+                <div class="card-bottom">
+                    <span class="card-title" id="text-card3">맛집 지도</span>
+                    <span class="arrow">&gt;</span>
+                </div>
+            </div>
+
+            <!-- 4. 교통 정보 -->
+            <div class="menu-card" data-page="transport">
+                <div class="card-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#6e5a4b" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="4" y="3" width="16" height="14" rx="2"/>
+                        <rect x="6" y="5" width="12" height="5" rx="1"/>
+                        <circle cx="8" cy="14" r="1"/>
+                        <circle cx="16" cy="14" r="1"/>
+                        <path d="M6 17l-2 3.5M18 17l2 3.5M4 21h16"/>
+                    </svg>
+                </div>
+                <div class="card-bottom">
+                    <span class="card-title" id="text-card4">교통 정보</span>
+                    <span class="arrow">&gt;</span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- 공통으로 사용하는 빈 상세 페이지 구조 레이어 -->
+    <div class="detail-page" id="detail-page-container">
+        <div class="detail-header">
+            <button class="back-btn" id="detail-back-btn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#6e5a4b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="19" y1="12" x2="5" y2="12"></line>
+                    <polyline points="12 19 5 12 12 5"></polyline>
+                </svg>
+            </button>
+        </div>
+        <div class="detail-content"></div>
+    </div>
+
+
+    <!-- 통합 스크립트 존 -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // [기능 1] 와이파이 선택창 기능
+            const wifiBtn = document.querySelectorAll('.nav-btn')[0]; 
+            const wifiModal = document.createElement('div');
+            wifiModal.style.cssText = `
+                position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+                background: rgba(0,0,0,0.4); display: none; justify-content: center;
+                align-items: center; z-index: 10002; backdrop-filter: blur(5px);
+            `;
+            
+            wifiModal.innerHTML = `
+                <div style="background: #fdfaf6; width: 85%; max-width: 340px; border-radius: 20px; padding: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); font-family: 'Noto Sans KR', sans-serif; color: #36291e;">
+                    <h3 style="margin-bottom: 16px; font-size: 17px; font-weight: 500; text-align: center;">Wi-Fi 네트워크 선택</h3>
+                    <div style="display: flex; flex-direction: column; gap: 10px;">
+                        <div class="wifi-item" style="padding: 12px; background: #f4eae1; border-radius: 12px; cursor: pointer; display: flex; justify-content: space-between; align-items: center;">
+                            <span>🔒 Guide_Secure_5G</span><span class="status" style="color: #a8978a; font-size: 12px;">연결하기</span>
+                        </div>
+                        <div class="wifi-item" style="padding: 12px; background: #f4eae1; border-radius: 12px; cursor: pointer; display: flex; justify-content: space-between; align-items: center;">
+                            <span>🔓 Hotel_Public_WiFi</span><span class="status" style="color: #a8978a; font-size: 12px;">연결하기</span>
+                        </div>
+                    </div>
+                    <button id="close-wifi" style="width: 100%; margin-top: 16px; padding: 10px; background: none; border: none; color: #7a685a; font-size: 14px; cursor: pointer;">취소 / Cancel</button>
+                </div>
+            `;
+            document.body.appendChild(wifiModal);
+
+            if (wifiBtn) {
+                wifiBtn.addEventListener('click', () => { wifiModal.style.display = 'flex'; });
+            }
+
+            wifiModal.querySelectorAll('.wifi-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    const wifiName = item.querySelector('span').textContent;
+                    const statusText = item.querySelector('.status');
+                    item.style.background = '#e6ded6';
+                    item.style.fontWeight = '500';
+                    statusText.textContent = '✔️ 연결됨';
+                    statusText.style.color = '#4a3b2c';
+                    setTimeout(() => {
+                        alert(`${wifiName} 네트워크에 연결되었습니다.`);
+                        wifiModal.style.display = 'none';
+                        item.style.background = '#f4eae1';
+                        item.style.fontWeight = '400';
+                        statusText.textContent = '연결하기';
+                        statusText.style.color = '#a8978a';
+                    }, 500);
+                });
+            });
+
+            document.getElementById('close-wifi').addEventListener('click', () => { wifiModal.style.display = 'none'; });
+
+            // [기능 2] 다국어 언어 선택 및 번역 시스템
+            const langBtn = document.querySelectorAll('.nav-btn')[1]; 
+            const languages = {
+                ko: {
+                    subtitle: "언제나 당신 곁의 가이드", welcomeTitle: "환영합니다!", welcomeSub: "가이드와 함께하세요",
+                    location: "제주 서귀포시", sky: "구름 많음", card1: "호텔 정보", card2: "관광 명소", card3: "맛집 지도", card4: "교통 정보"
+                },
+                en: {
+                    subtitle: "Always your guide by your side", welcomeTitle: "Welcome!", welcomeSub: "Enjoy with your guide",
+                    location: "Seogwipo, Jeju", sky: "Mostly Cloudy", card1: "Hotel Info", card2: "Attractions", card3: "Food Map", card4: "Transport"
+                },
+                zh: {
+                    subtitle: "常伴您左右的向导", welcomeTitle: "欢迎光临！", welcomeSub: "与您的向导一起开启旅程",
+                    location: "济州 西归浦市", sky: "多云", card1: "酒店信息", card2: "旅游景点", card3: "美食地图", card4: "交通信息"
+                },
+                ja: {
+                    subtitle: "いつもあなたのそばにあるガイド", welcomeTitle: "ようこそ！", welcomeSub: "ガイドと一緒に楽しんでください",
+                    location: "済州 西帰浦市", sky: "曇り", card1: "ホテル 정보", card2: "観光名所", card3: "グルメマップ", card4: "交通정보"
+                }
+            };
+
+            const langModal = document.createElement('div');
+            langModal.style.cssText = `
+                position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+                background: rgba(0,0,0,0.4); display: none; justify-content: center;
+                align-items: center; z-index: 10002; backdrop-filter: blur(5px);
+            `;
+            
+            langModal.innerHTML = `
+                <div style="background: #fdfaf6; width: 85%; max-width: 340px; border-radius: 20px; padding: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); font-family: 'Noto Sans KR', sans-serif; color: #36291e;">
+                    <h3 style="margin-bottom: 16px; font-size: 17px; font-weight: 500; text-align: center;">Language / 언어 선택</h3>
+                    <div style="display: flex; flex-direction: column; gap: 10px;">
+                        <div class="lang-item" data-lang="ko" style="padding: 12px; background: #f4eae1; border-radius: 12px; cursor: pointer; text-align: center; font-weight: 500;">한국어</div>
+                        <div class="lang-item" data-lang="en" style="padding: 12px; background: #f4eae1; border-radius: 12px; cursor: pointer; text-align: center;">English</div>
+                        <div class="lang-item" data-lang="zh" style="padding: 12px; background: #f4eae1; border-radius: 12px; cursor: pointer; text-align: center;">中文 (简体)</div>
+                        <div class="lang-item" data-lang="ja" style="padding: 12px; background: #f4eae1; border-radius: 12px; cursor: pointer; text-align: center;">日本語</div>
+                    </div>
+                    <button id="close-lang" style="width: 100%; margin-top: 16px; padding: 10px; background: none; border: none; color: #7a685a; font-size: 14px; cursor: pointer;">취소 / Cancel</button>
+                </div>
+            `;
+            document.body.appendChild(langModal);
+
+            if (langBtn) {
+                langBtn.addEventListener('click', () => { langModal.style.display = 'flex'; });
+            }
+
+            document.getElementById('close-lang').addEventListener('click', () => { langModal.style.display = 'none'; });
+
+            langModal.querySelectorAll('.lang-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    const selectedLang = item.getAttribute('data-lang');
+                    const pack = languages[selectedLang];
+
+                    document.getElementById('text-subtitle').textContent = pack.subtitle;
+                    document.getElementById('text-welcome-title').textContent = pack.welcomeTitle;
+                    document.getElementById('text-welcome-sub').textContent = pack.welcomeSub;
+                    document.getElementById('text-location').textContent = pack.location;
+                    document.getElementById('text-sky').textContent = pack.sky;
+                    document.getElementById('text-card1').textContent = pack.card1;
+                    document.getElementById('text-card2').textContent = pack.card2;
+                    document.getElementById('text-card3').textContent = pack.card3;
+                    document.getElementById('text-card4').textContent = pack.card4;
+
+                    langModal.querySelectorAll('.lang-item').forEach(i => i.style.fontWeight = '400');
+                    item.style.fontWeight = '700';
+
+                    setTimeout(() => { langModal.style.display = 'none'; }, 250);
+                });
+            });
+
+            // [기능 3] 상세 페이지 및 뒤로가기 제어 시스템
+            const menuCards = document.querySelectorAll('.menu-card');
+            const detailPage = document.getElementById('detail-page-container');
+            const backBtn = document.getElementById('detail-back-btn');
+            
+            function openDetailPage(pageName) {
+                detailPage.style.display = 'flex';
+                history.pushState({ page: 'detail' }, '', '');
+            }
+            
+            function closeDetailPage() {
+                detailPage.style.display = 'none';
+            }
+            
+            menuCards.forEach(card => {
+                card.addEventListener('click', () => {
+                    const targetPage = card.getAttribute('data-page');
+                    setTimeout(() => { openDetailPage(targetPage); }, 100); 
+                });
+            });
+            
+            backBtn.addEventListener('click', () => { history.back(); });
+            window.addEventListener('popstate', (event) => { closeDetailPage(); });
+        });
+    </script>
+</body>
+</html>
