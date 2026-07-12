@@ -15,7 +15,7 @@
         body {
             margin: 0;
             padding: 0;
-            background-color: #eaeaea; /* PC로 볼 때 폰 바깥쪽 배경색 (원하는 색상으로 변경 가능) */
+            background-color: #eaeaea; 
             display: flex;
             justify-content: center;
             align-items: center;
@@ -29,14 +29,13 @@
             flex-direction: column;
             justify-content: space-between;
             width: 100%;
-            max-width: 430px; /* 💡 아이폰/갤럭시 등 모바일 너비로 강제 고정 */
+            max-width: 430px; 
             height: 100vh;
-            max-height: 932px; /* 💡 일반적인 모바일 세로 길이 제한 */
-            /* 기존 styles.css의 배경 그라데이션이 있다면 여기도 유지되도록 처리 (혹은 덮어쓰기 가능) */
+            max-height: 932px; 
             background: linear-gradient(180deg, #e3daf5 0%, #fdf5eb 30%, #f3e6da 100%); 
             padding: 70px 24px 30px 24px; 
             box-sizing: border-box;
-            box-shadow: 0 0 30px rgba(0,0,0,0.08); /* PC에서 볼 때 폰 느낌이 나도록 은은한 그림자 추가 */
+            box-shadow: 0 0 30px rgba(0,0,0,0.08); 
         }
 
         .main-header {
@@ -49,19 +48,29 @@
             justify-content: space-between;
             align-items: center;
             width: 100%;
-            margin: 40px 0; /* 타이틀과 카드 사이의 간격을 시안과 유사하게 고정 */
+            margin: 40px 0; 
         }
 
         .menu-grid {
-            width: 100%;
-        }
+display: grid;
+    grid-template-columns: repeat(2, 1fr); /* 2개씩 가로로 배치 */
+    gap: 16px; /* 카드 사이 간격 */
+    width: 100%;
+    margin-top: 20px;
+}
 
         /* 카드 클릭/터치 시 반응 효과 */
         .menu-card {
-            transition: transform 0.1s ease-in-out, background-color 0.2s ease;
-            cursor: pointer;
-            -webkit-tap-highlight-color: transparent;
-        }
+background: #ffffff; /* 카드 배경색(흰색) */
+    padding: 16px;
+    border-radius: 16px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    aspect-ratio: 1 / 1; /* 가로 세로 1:1 비율로 정사각형 유지 */
+}
         .menu-card:active {
             transform: scale(0.95);
         }
@@ -75,79 +84,240 @@
             gap: 8px;
             z-index: 10001;
         }
-        
-        /* 전체 화면을 덮는 가상의 빈 상세 페이지 레이어 */
-        .detail-page {
+
+        /* 🏨 공통 텍스트 전용 모달 팝업 디자인 */
+        .hotel-modal-overlay {
             position: fixed;
             top: 0;
-            left: 50%;
-            transform: translateX(-50%);
+            left: 0;
             width: 100%;
-            max-width: 430px;
-            height: 100vh;
-            background-color: #f4eae1;
-            z-index: 10000;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
             display: none;
-            flex-direction: column;
-            padding: 20px 24px;
+            justify-content: center;
+            align-items: center;
+            z-index: 10003;
+            backdrop-filter: blur(5px);
+        }
+        .hotel-modal-window {
+            position: relative; 
+            background: #fdfaf6;
+            width: 95%; 
+            max-width: 410px; 
+            max-height: 85vh;
+            overflow-y: auto;
+            border-radius: 28px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.18);
+            font-family: 'Noto Sans KR', sans-serif;
+            color: #36291e;
+            animation: slideUp 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+            padding: 36px 24px 32px 24px; 
             box-sizing: border-box;
         }
-        
-        /* 왼쪽 상단 뒤로가기 이미지 버튼 영역 */
-        .detail-header {
-            display: flex;
-            align-items: center;
-            justify-content: flex-start;
-            width: 100%;
-            height: 50px;
-            margin-top: 40px;
+        @keyframes slideUp {
+            from { transform: translateY(40px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
         }
-        .back-btn {
+        
+        /* 상단 우측에 깔끔하게 붙는 닫기 버튼 */
+        .hotel-modal-close {
+            position: absolute;
+            top: 24px;
+            right: 24px;
             background: none;
             border: none;
-            padding: 8px;
+            width: 32px;
+            height: 32px;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            -webkit-tap-highlight-color: transparent;
-            transition: transform 0.1s ease;
+            font-size: 26px;
+            color: #a8978a;
+            transition: color 0.2s ease;
         }
-        .back-btn:active {
-            transform: scale(0.85);
-        }
-        .back-btn svg {
-            width: 24px;
-            height: 24px;
+        .hotel-modal-close:hover {
+            color: #6e5a4b;
         }
         
-        /* 빈 내부 화면 구역 */
-        .detail-content {
-            flex-grow: 1;
+        .hotel-modal-title {
+            margin: 0 0 14px 0;
+            font-size: 22px;
+            font-weight: 500;
+            color: #36291e;
+            padding-right: 30px; 
+        }
+        .hotel-modal-desc {
+            font-size: 15px;
+            line-height: 1.7; 
+            color: #6e5a4b;
+            margin: 0 0 24px 0;
+        }
+
+        /* 일반 정보(호텔/교통)용 그리드 스타일 */
+        .hotel-info-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 20px; 
+            border-top: 1px solid #e6ded6;
+            padding-top: 24px;
+        }
+        .hotel-info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14.5px;
+            line-height: 1.5;
+        }
+        .hotel-info-label {
+            color: #a8978a;
+        }
+        .hotel-info-value {
+            font-weight: 500;
+            text-align: right;
+            color: #36291e;
+        }
+
+        /* 🗺️ 관광명소 & 맛집 공통 세로 리스트 컨테이너 */
+        .attraction-list, .food-list {
+            display: flex;
+            flex-direction: column;
+            border-top: 1px solid #e6ded6;
+            padding-top: 12px;
+        }
+        
+        /* 카드 리스트 항목 경계선 */
+        .attraction-card, .food-card {
+            padding: 20px 0;
+            border-bottom: 1px solid #eee5db;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .attraction-card:last-child, .food-card:last-child {
+            border-bottom: none;
+        }
+
+        /* [이름  사진(들)  거리] 상단 레이아웃 */
+        .attraction-top-row, .food-top-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             width: 100%;
+        }
+        .food-name {
+            font-size: 16px;
+            font-weight: 500;
+            color: #36291e;
+            flex: 1;
+            padding-right: 8px;
+        }
+        .attraction-name {
+            font-size: 16px;
+            font-weight: 500;
+            color: #36291e;
+            flex: 1;
+            padding-right: 8px;
+        }
+        .attraction-distance, .food-distance {
+            font-size: 14px;
+            font-weight: 500;
+            color: #a8978a;
+            white-space: nowrap;
+        }
+
+        /* 단일 이미지 박스 (관광명소용) */
+        .attraction-img-wrapper {
+            width: 70px;
+            height: 50px;
+            border-radius: 8px;
+            background-color: #e6ded6;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 12px;
+        }
+        .attraction-img-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* 🍔 맛집 전용: 대표 메뉴 사진 3개 배치용 컨테이너 */
+        .food-images-container {
+            display: flex;
+            gap: 4px;
+            margin-right: 12px;
+        }
+        .food-img-wrapper {
+            width: 50px;
+            height: 50px;
+            border-radius: 6px;
+            background-color: #e6ded6;
+            overflow: hidden;
             display: flex;
             justify-content: center;
             align-items: center;
         }
+        .food-img-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* 🏷️ 맛집 전용: 대표 메뉴 텍스트 나열 행 */
+        .food-menu-row {
+            font-size: 13.5px;
+            color: #7e6b5c;
+            background-color: #fcf8f4;
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 1px dashed #e6ded6;
+            line-height: 1.4;
+        }
+
+        /* 지도보기 버튼 디자인 */
+        .map-redirect-btn {
+            align-self: flex-start;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background-color: #f4eae1;
+            color: #6e5a4b;
+            border: 1px solid #e6ded6;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+        .map-redirect-btn:active {
+            background-color: #e6ded6;
+        }
+        .map-redirect-btn svg {
+            width: 14px;
+            height: 14px;
+            fill: none;
+            stroke: #6e5a4b;
+            stroke-width: 2;
+        }
     </style>
 </head>
 <body>
-    <!-- 전체 배경을 감싸는 컨테이너 -->
     <div class="main-container">
-        
-        <!-- 우측 상단 버튼 그룹 -->
         <div class="top-buttons">
             <button class="nav-btn">WIFI</button>
             <button class="nav-btn">Language</button>
         </div>
 
-        <!-- 메인 타이틀 영역 -->
         <header class="main-header">
             <h1 class="brand-title">Your Guide</h1>
             <p class="brand-subtitle" id="text-subtitle">언제나 당신 곁의 가이드</p>
         </header>
 
-        <!-- 중간 정보 영역 (환영 메시지 + 날씨 정보) -->
         <div class="info-section">
             <div class="welcome-box">
                 <h2 id="text-welcome-title">환영합니다!</h2>
@@ -170,9 +340,7 @@
             </div>
         </div>
 
-        <!-- 하단 2x2 메뉴 카드 그리드 -->
         <div class="menu-grid">
-            <!-- 1. 호텔 정보 -->
             <div class="menu-card" data-page="hotel">
                 <div class="card-icon">
                     <svg viewBox="0 0 24 24" fill="none" stroke="#6e5a4b" stroke-width="1.2">
@@ -189,7 +357,6 @@
                 </div>
             </div>
 
-            <!-- 2. 관광 명소 -->
             <div class="menu-card" data-page="attractions">
                 <div class="card-icon">
                     <svg viewBox="0 0 24 24" fill="none" stroke="#6e5a4b" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round">
@@ -207,7 +374,6 @@
                 </div>
             </div>
 
-            <!-- 3. 맛집 지도 -->
             <div class="menu-card" data-page="food">
                 <div class="card-icon">
                     <svg viewBox="0 0 24 24" fill="none" stroke="#6e5a4b" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round">
@@ -222,7 +388,6 @@
                 </div>
             </div>
 
-            <!-- 4. 교통 정보 -->
             <div class="menu-card" data-page="transport">
                 <div class="card-icon">
                     <svg viewBox="0 0 24 24" fill="none" stroke="#6e5a4b" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
@@ -239,26 +404,21 @@
                 </div>
             </div>
         </div>
-
     </div>
 
-    <!-- 공통으로 사용하는 빈 상세 페이지 구조 레이어 -->
-    <div class="detail-page" id="detail-page-container">
-        <div class="detail-header">
-            <button class="back-btn" id="detail-back-btn">
-                <svg viewBox="0 0 24 24" fill="none" stroke="#6e5a4b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <line x1="19" y1="12" x2="5" y2="12"></line>
-                    <polyline points="12 19 5 12 12 5"></polyline>
-                </svg>
-            </button>
+    <!-- 🏨 4개 팝업 공통 활용 레이아웃 -->
+    <div class="hotel-modal-overlay" id="common-info-modal">
+        <div class="hotel-modal-window">
+            <button class="hotel-modal-close" id="close-common-modal">&times;</button>
+            <div id="modal-body-content"></div>
         </div>
-        <div class="detail-content"></div>
     </div>
 
 
-    <!-- 통합 스크립트 존 -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            let currentLang = 'ko';
+
             // [기능 1] 와이파이 선택창 기능
             const wifiBtn = document.querySelectorAll('.nav-btn')[0]; 
             const wifiModal = document.createElement('div');
@@ -267,7 +427,6 @@
                 background: rgba(0,0,0,0.4); display: none; justify-content: center;
                 align-items: center; z-index: 10002; backdrop-filter: blur(5px);
             `;
-            
             wifiModal.innerHTML = `
                 <div style="background: #fdfaf6; width: 85%; max-width: 340px; border-radius: 20px; padding: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); font-family: 'Noto Sans KR', sans-serif; color: #36291e;">
                     <h3 style="margin-bottom: 16px; font-size: 17px; font-weight: 500; text-align: center;">Wi-Fi 네트워크 선택</h3>
@@ -283,60 +442,17 @@
                 </div>
             `;
             document.body.appendChild(wifiModal);
-
-            if (wifiBtn) {
-                wifiBtn.addEventListener('click', () => { wifiModal.style.display = 'flex'; });
-            }
-
-            wifiModal.querySelectorAll('.wifi-item').forEach(item => {
-                item.addEventListener('click', () => {
-                    const wifiName = item.querySelector('span').textContent;
-                    const statusText = item.querySelector('.status');
-                    item.style.background = '#e6ded6';
-                    item.style.fontWeight = '500';
-                    statusText.textContent = '✔️ 연결됨';
-                    statusText.style.color = '#4a3b2c';
-                    setTimeout(() => {
-                        alert(`${wifiName} 네트워크에 연결되었습니다.`);
-                        wifiModal.style.display = 'none';
-                        item.style.background = '#f4eae1';
-                        item.style.fontWeight = '400';
-                        statusText.textContent = '연결하기';
-                        statusText.style.color = '#a8978a';
-                    }, 500);
-                });
-            });
-
+            if (wifiBtn) wifiBtn.addEventListener('click', () => { wifiModal.style.display = 'flex'; });
             document.getElementById('close-wifi').addEventListener('click', () => { wifiModal.style.display = 'none'; });
 
-            // [기능 2] 다국어 언어 선택 및 번역 시스템
+            // [기능 2] 다국어 언어 선택 및 메인화면 번역 시스템
             const langBtn = document.querySelectorAll('.nav-btn')[1]; 
-            const languages = {
-                ko: {
-                    subtitle: "언제나 당신 곁의 가이드", welcomeTitle: "환영합니다!", welcomeSub: "가이드와 함께하세요",
-                    location: "제주 서귀포시", sky: "구름 많음", card1: "호텔 정보", card2: "관광 명소", card3: "맛집 지도", card4: "교통 정보"
-                },
-                en: {
-                    subtitle: "Always your guide by your side", welcomeTitle: "Welcome!", welcomeSub: "Enjoy with your guide",
-                    location: "Seogwipo, Jeju", sky: "Mostly Cloudy", card1: "Hotel Info", card2: "Attractions", card3: "Food Map", card4: "Transport"
-                },
-                zh: {
-                    subtitle: "常伴您左右的向导", welcomeTitle: "欢迎光临！", welcomeSub: "与您的向导一起开启旅程",
-                    location: "济州 西归浦市", sky: "多云", card1: "酒店信息", card2: "旅游景点", card3: "美食地图", card4: "交通信息"
-                },
-                ja: {
-                    subtitle: "いつもあなたのそばにあるガイド", welcomeTitle: "ようこそ！", welcomeSub: "ガイドと一緒に楽しんでください",
-                    location: "済州 西帰浦市", sky: "曇り", card1: "ホテル 정보", card2: "観光名所", card3: "グルメマップ", card4: "交通정보"
-                }
-            };
-
             const langModal = document.createElement('div');
             langModal.style.cssText = `
                 position: fixed; top: 0; left: 0; width: 100%; height: 100%;
                 background: rgba(0,0,0,0.4); display: none; justify-content: center;
                 align-items: center; z-index: 10002; backdrop-filter: blur(5px);
             `;
-            
             langModal.innerHTML = `
                 <div style="background: #fdfaf6; width: 85%; max-width: 340px; border-radius: 20px; padding: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); font-family: 'Noto Sans KR', sans-serif; color: #36291e;">
                     <h3 style="margin-bottom: 16px; font-size: 17px; font-weight: 500; text-align: center;">Language / 언어 선택</h3>
@@ -350,17 +466,201 @@
                 </div>
             `;
             document.body.appendChild(langModal);
-
-            if (langBtn) {
-                langBtn.addEventListener('click', () => { langModal.style.display = 'flex'; });
-            }
-
+            if (langBtn) langBtn.addEventListener('click', () => { langModal.style.display = 'flex'; });
             document.getElementById('close-lang').addEventListener('click', () => { langModal.style.display = 'none'; });
+
+            // 💡 [통합 데이터 저장소] 모든 국가별 언어셋 정보 동기화 및 누락 데이터 완벽 수리 완료
+            const languages = {
+                ko: {
+                    subtitle: "언제나 당신 곁의 가이드", welcomeTitle: "환영합니다!", welcomeSub: "가이드와 함께하세요",
+                    location: "제주 서귀포시", sky: "구름 많음", card1: "호텔 정보", card2: "관광 명소", card3: "맛집 지도", card4: "교통 정보",
+                    btnMap: "지도 보기", menuPrefix: "대표 메뉴",
+                    modals: {
+                        hotel: {
+                            type: "grid", title: "호텔 안내", desc: "당신의 편안한 휴식을 위한 호텔 상세 정보입니다.",
+                            rows: [
+                                { label: "체크인", value: "15:00" }, 
+                                { label: "체크아웃", value: "11:00" },
+                                { label: "프론트 연락처", value: "내선 0번 (064-XXXX-XXXX)" },
+                                { label: "조식 뷔페", value: "07:00 ~ 10:00 (2F 레스토랑)" },
+                                { label: "피트니스 & 수영장", value: "06:00 ~ 22:00 (지하 1F)" },
+                                { label: "객실 와이파이 비밀번호", value: "hotel_guest123" }
+                            ]
+                        },
+                        food: {
+                            type: "food-list", title: "맛집 지도", desc: "현재 위치에서 가장 가까운 순으로 정렬된 주민·호텔리어 추천 숨은 맛집 리스트입니다.",
+                            items: [
+                                { name: "삼무국수 2호점", dist: "도보 5분", query: "삼무국수+2호점", menus: "고기국수, 회국수, 메밀만두", imgs: ["images/food3_1.jpg", "images/food3_2.jpg", "images/food3_3.jpg"] },
+                                { name: "돈사돈 서귀포점", dist: "도보 10분", query: "돈사돈+서귀포점", menus: "근고기, 흑돼지 김치찌개, 냉면", imgs: ["images/food1_1.jpg", "images/food1_2.jpg", "images/food1_3.jpg"] },
+                                { name: "네거리식당", dist: "차량 5분", query: "네거리식당", menus: "갈치조림, 갈치구이, 성게미역국", imgs: ["images/food2_1.jpg", "images/food2_2.jpg", "images/food2_3.jpg"] },
+                                { name: "공천포식당", dist: "차량 12분", query: "공천포식당", menus: "전복물회, 보말죽, 한치물회", imgs: ["images/food4_1.jpg", "images/food4_2.jpg", "images/food4_3.jpg"] }
+                            ]
+                        },
+                        transport: {
+                            type: "grid", title: "교통 정보", desc: "호텔에서 외부로 이동하실 때 필요한 교통수단 안내입니다.",
+                            rows: [
+                                { label: "공항 리무진 버스", value: "600번 탑승 (호텔 정문 앞, 20분 간격)" },
+                                { label: "제주 국제공항 소요시간", value: "약 60분 ~ 70분" },
+                                { label: "호텔 전용 셔틀버스", value: "하루 3회 운행 (사전 예약 필수)" },
+                                { label: "콜택시 호출 번호", value: "서귀포 브랜드콜 (064-762-4000)" }
+                            ]
+                        },
+                        attractions: {
+                            type: "list", title: "관광 명소", desc: "현재 위치에서 가장 가까운 순으로 정렬된 제주 주요 명소 리스트입니다.",
+                            items: [
+                                { name: "천지연폭포", dist: "3.5 km", query: "천지연폭포", img: "images/cheonjiyeon.jpg" },
+                                { name: "외돌개", dist: "4.8 km", query: "외돌개", img: "images/oedolgae.jpg" },
+                                { name: "정방폭포", dist: "5.2 km", query: "정방폭포", img: "images/jeongbang.jpg" },
+                                { name: "중문관광단지", dist: "12.0 km", query: "중문관광단지", img: "images/jungmun.jpg" },
+                                { name: "성산일출봉", dist: "42.5 km", query: "성산일출봉", img: "images/seongsan.jpg" }
+                            ]
+                        }
+                    }
+                },
+                en: {
+                    subtitle: "Always your guide by your side", welcomeTitle: "Welcome!", welcomeSub: "Enjoy with your guide",
+                    location: "Seogwipo, Jeju", sky: "Mostly Cloudy", card1: "Hotel Info", card2: "Attractions", card3: "Food Map", card4: "Transport",
+                    btnMap: "View Map", menuPrefix: "Signature Menu",
+                    modals: {
+                        hotel: {
+                            type: "grid", title: "Hotel Information", desc: "Detailed information for your comfortable stay.",
+                            rows: [
+                                { label: "Check-in", value: "15:00" }, 
+                                { label: "Check-out", value: "11:00" },
+                                { label: "Front Desk", value: "Dial 0 (064-XXXX-XXXX)" }, 
+                                { label: "Breakfast Buffet", value: "07:00 ~ 10:00 (2F Restaurant)" },
+                                { label: "Fitness & Pool", value: "06:00 ~ 22:00 (B1F)" }, 
+                                { label: "Room Wi-Fi PW", value: "hotel_guest123" }
+                            ]
+                        },
+                        food: {
+                            type: "food-list", title: "Local Food Map", desc: "Authentic culinary gems sorted by proximity from your current location.",
+                            items: [
+                                { name: "Sammu Noodles No.2", dist: "5m walk", query: "Sammu", menus: "Pork Noodles, Sashimi Noodles, Buckwheat Dumplings", imgs: ["images/food3_1.jpg", "images/food3_2.jpg", "images/food3_3.jpg"] },
+                                { name: "Donsadon Seogwipo", dist: "10m walk", query: "Donsadon", menus: "Thick Pork Grilled, Pork Kimchi Stew, Cold Noodles", imgs: ["images/food1_1.jpg", "images/food1_2.jpg", "images/food1_3.jpg"] },
+                                { name: "Negeori Restaurant", dist: "5m drive", query: "Negeori", menus: "Braised Hairtail, Grilled Hairtail, Sea Urchin Seaweed Soup", imgs: ["images/food2_1.jpg", "images/food2_2.jpg", "images/food2_3.jpg"] },
+                                { name: "Gongcheonpo Restaurant", dist: "12m drive", query: "Gongcheonpo", menus: "Abalone Cold Raw Fish Soup, Buckwheat/Top Shell Porridge", imgs: ["images/food4_1.jpg", "images/food4_2.jpg", "images/food4_3.jpg"] }
+                            ]
+                        },
+                        transport: {
+                            type: "grid", title: "Transportation Info", desc: "Transit guides for moving from the hotel.",
+                            rows: [
+                                { label: "Airport Limousine Bus", value: "No. 600 (In front of Main Gate, every 20 mins)" },
+                                { label: "Travel Time to Airport", value: "Approx. 60-70 mins" },
+                                { label: "Hotel Shuttle Bus", value: "3 times a day (Reservation required)" },
+                                { label: "Call Taxi Number", value: "Seogwipo Brand Call (+82-64-762-4000)" }
+                            ]
+                        },
+                        attractions: {
+                            type: "list", title: "Local Attractions", desc: "Top Jeju attractions sorted by proximity from your current location.",
+                            items: [
+                                { name: "Cheonjiyeon Waterfall", dist: "3.5 km", query: "Cheonjiyeon+Waterfall", img: "images/cheonjiyeon.jpg" },
+                                { name: "Oedolgae Rock", dist: "4.8 km", query: "Oedolgae", img: "images/oedolgae.jpg" },
+                                { name: "Jeongbang Waterfall", dist: "5.2 km", query: "Jeongbang+Waterfall", img: "images/jeongbang.jpg" },
+                                { name: "Jungmun Tourist Complex", dist: "12.0 km", query: "Jungmun+Tourist+Complex", img: "images/jungmun.jpg" },
+                                { name: "Seongsan Ilchulbong", dist: "42.5 km", query: "Seongsan+Ilchulbong", img: "images/seongsan.jpg" }
+                            ]
+                        }
+                    }
+                },
+                zh: {
+                    subtitle: "常伴您左右的向导", welcomeTitle: "欢迎光临！", welcomeSub: "与您的向导一起开启旅程",
+                    location: "济州 西归浦市", sky: "多云", card1: "酒店信息", card2: "旅游景点", card3: "美食地图", card4: "交通信息",
+                    btnMap: "查看地图", menuPrefix: "推荐菜品",
+                    modals: {
+                        hotel: { 
+                            type: "grid", title: "酒店指南", desc: "为了您的舒适住宿而准备的酒店详细指南。", 
+                            rows: [
+                                { label: "入住时间 (Check-in)", value: "15:00" }, 
+                                { label: "退房时间 (Check-out)", value: "11:00" },
+                                { label: "前台电话 (Front Desk)", value: "分机 0 (064-XXXX-XXXX)" },
+                                { label: "自助早餐 (Breakfast)", value: "07:00 ~ 10:00 (2F 餐厅)" },
+                                { label: "健身房与泳池", value: "06:00 ~ 22:00 (地下一层 B1F)" },
+                                { label: "客房无线密码 (Wi-Fi PW)", value: "hotel_guest123" }
+                            ] 
+                        },
+                        food: {
+                            type: "food-list", title: "美食地图", desc: "为您推荐当地居民及酒店员工挑选、按距离排序的名店好去处。",
+                            items: [
+                                { name: "三无汤面 2号店", dist: "步行5分钟", query: "Sammu", menus: "猪肉汤面, 拌面, 荞麦蒸饺", imgs: ["images/food3_1.jpg", "images/food3_2.jpg", "images/food3_3.jpg"] },
+                                { name: "豚사돈 西归浦店", dist: "步行10分钟", query: "Donsadon", menus: "烤黑猪肉, 猪肉泡菜汤, 冷面", imgs: ["images/food1_1.jpg", "images/food1_2.jpg", "images/food1_3.jpg"] },
+                                { name: "四거리饭店", dist: "车程5分钟", query: "Negeori", menus: "辣炖带鱼, 烤带鱼, 海胆海带汤", imgs: ["images/food2_1.jpg", "images/food2_2.jpg", "images/food2_3.jpg"] },
+                                { name: "贡泉浦饭店", dist: "车程12分钟", query: "Gongcheonpo", menus: "鲍鱼水生鱼片, 螺豆腐粥, 鱿鱼水生鱼片", imgs: ["images/food4_1.jpg", "images/food4_2.jpg", "images/food4_3.jpg"] }
+                            ]
+                        },
+                        transport: { 
+                            type: "grid", title: "交通信息", desc: "从酒店出发前往外地时所需的交通工具指南。", 
+                            rows: [
+                                { label: "机场豪华巴士", value: "搭乘600路 (酒店正门前，每20分钟一班)" },
+                                { label: "前往济州机场所需时间", value: "约 60分钟 ~ 70分钟" },
+                                { label: "酒店专用穿梭巴士", value: "每日运行3班 (必须提前预约)" },
+                                { label: "呼叫出租车电话", value: "西归浦品牌出租车 (064-762-4000)" }
+                            ] 
+                        },
+                        attractions: {
+                            type: "list", title: "旅游景点", desc: "按照距离您当前位置从近到远排序的济州岛核心景点列表。",
+                            items: [
+                                { name: "天地渊瀑布", dist: "3.5 km", query: "Cheonjiyeon+Waterfall", img: "images/cheonjiyeon.jpg" },
+                                { name: "独立岩", dist: "4.8 km", query: "Oedolgae", img: "images/oedolgae.jpg" },
+                                { name: "正房瀑布", dist: "5.2 km", query: "Jeongbang+Waterfall", img: "images/jeongbang.jpg" },
+                                { name: "中文旅游区", dist: "12.0 km", query: "Jungmun+Tourist+Complex", img: "images/jungmun.jpg" },
+                                { name: "城山日出峰", dist: "42.5 km", query: "Seongsan+Ilchulbong", img: "images/seongsan.jpg" }
+                            ]
+                        }
+                    }
+                },
+                ja: {
+                    subtitle: "いつもあなたのそばにあるガイド", welcomeTitle: "ようこそ！", welcomeSub: "ガイドと一緒に楽しんでください",
+                    location: "済州 西帰浦市", sky: "曇り", card1: "ホテル情報", card2: "観光名所", card3: "グルメマップ", card4: "交通情報",
+                    btnMap: "地図を見る", menuPrefix: "看板メニュー",
+                    modals: {
+                        hotel: { 
+                            type: "grid", title: "ホテル案内", desc: "快適なご滞在のためのホテルの詳細情報をご案内いたします。", 
+                            rows: [
+                                { label: "チェックイン", value: "15:00" }, 
+                                { label: "チェックアウト", value: "11:00" },
+                                { label: "フロント連絡先", value: "内線 0番 (064-XXXX-XXXX)" },
+                                { label: "朝食バイキング", value: "07:00 ~ 10:00 (2F レストラン)" },
+                                { label: "フィットネス＆プール", value: "06:00 ~ 22:00 (地下 1F)" },
+                                { label: "客室 Wi-Fi パスワード", value: "hotel_guest123" }
+                            ] 
+                        },
+                        food: {
+                            type: "food-list", title: "グルメマップ", desc: "現在地から近い順に並んだ、地元住民やホテリエがおすすめする隠れた名店リストです。",
+                            items: [
+                                { name: "サムムククス 2号店", dist: "徒歩5分", query: "Sammu", menus: "肉ククス(豚肉麺), 刺身ククス, そばマンドゥ", imgs: ["images/food3_1.jpg", "images/food3_2.jpg", "images/food3_3.jpg"] },
+                                { name: "ドンサドン 西帰浦店", dist: "徒歩10分", query: "Donsadon", menus: "熟成黒豚焼き, 豚肉キムチチゲ, 冷麺", imgs: ["images/food1_1.jpg", "images/food1_2.jpg", "images/food1_3.jpg"] },
+                                { name: "ネ고리食堂", dist: "車で5分", query: "Negeori", menus: "太刀魚の煮付け, 焼き太刀魚, ウニわかめスープ", imgs: ["images/food2_1.jpg", "images/food2_2.jpg", "images/food2_3.jpg"] },
+                                { name: "コンチョンポ食堂", dist: "車で12分", query: "Gongcheonpo", menus: "アワビ水刺身(ムルフェ), ボマル(クボガイ)粥, イカ水刺身", imgs: ["images/food4_1.jpg", "images/food4_2.jpg", "images/food4_3.jpg"] }
+                            ]
+                        },
+                        transport: { 
+                            type: "grid", title: "交通情報", desc: "ホテルから外部へ移動される際に必要な交通手段のご案内です。", 
+                            rows: [
+                                { label: "空港リムジンバス", value: "600番バス乗車 (ホテル正門前、20分間隔)" },
+                                { label: "済州国際空港までの所要時間", value: "約 60分 ~ 70分" },
+                                { label: "ホテル専用シャトルバス", value: "1日3回運行 (事前予約必須)" },
+                                { label: "コールタクシー呼び出し番号", value: "西帰浦ブランドコール (064-762-4000)" }
+                            ] 
+                        },
+                        attractions: {
+                            type: "list", title: "観光名所", desc: "現在地から近い順に並んだ済州島の本質的な主要観光地リストです。",
+                            items: [
+                                { name: "天地淵の滝", dist: "3.5 km", query: "Cheonjiyeon+Waterfall", img: "images/cheonjiyeon.jpg" },
+                                { name: "ウェドルゲ(独立岩)", dist: "4.8 km", query: "Oedolgae", img: "images/oedolgae.jpg" },
+                                { name: "正房の滝", dist: "5.2 km", query: "Jeongbang+Waterfall", img: "images/jeongbang.jpg" },
+                                { name: "中文観光団地", dist: "12.0 km", query: "Jungmun+Tourist+Complex", img: "images/jungmun.jpg" },
+                                { name: "城山日出峰", dist: "42.5 km", query: "Seongsan+Ilchulbong", img: "images/seongsan.jpg" }
+                            ]
+                        }
+                    }
+                }
+            };
 
             langModal.querySelectorAll('.lang-item').forEach(item => {
                 item.addEventListener('click', () => {
-                    const selectedLang = item.getAttribute('data-lang');
-                    const pack = languages[selectedLang];
+                    currentLang = item.getAttribute('data-lang');
+                    const pack = languages[currentLang];
 
                     document.getElementById('text-subtitle').textContent = pack.subtitle;
                     document.getElementById('text-welcome-title').textContent = pack.welcomeTitle;
@@ -374,34 +674,119 @@
 
                     langModal.querySelectorAll('.lang-item').forEach(i => i.style.fontWeight = '400');
                     item.style.fontWeight = '700';
-
                     setTimeout(() => { langModal.style.display = 'none'; }, 250);
                 });
             });
 
-            // [기능 3] 상세 페이지 및 뒤로가기 제어 시스템
+            // [기능 3] 동적 모달 제어 및 렌더링 분기
             const menuCards = document.querySelectorAll('.menu-card');
-            const detailPage = document.getElementById('detail-page-container');
-            const backBtn = document.getElementById('detail-back-btn');
-            
-            function openDetailPage(pageName) {
-                detailPage.style.display = 'flex';
-                history.pushState({ page: 'detail' }, '', '');
-            }
-            
-            function closeDetailPage() {
-                detailPage.style.display = 'none';
-            }
-            
+            const commonModal = document.getElementById('common-info-modal');
+            const closeCommonBtn = document.getElementById('close-common-modal');
+            const modalBodyContent = document.getElementById('modal-body-content');
+
             menuCards.forEach(card => {
                 card.addEventListener('click', () => {
                     const targetPage = card.getAttribute('data-page');
-                    setTimeout(() => { openDetailPage(targetPage); }, 100); 
+                    const data = languages[currentLang].modals[targetPage];
+                    const btnMapText = languages[currentLang].btnMap || "지도 보기";
+                    const menuPrefixText = languages[currentLang].menuPrefix || "대표 메뉴";
+                    
+                    if (data) {
+                        setTimeout(() => { 
+                            let innerHtml = `
+                                <h3 class="hotel-modal-title">${data.title}</h3>
+                                <p class="hotel-modal-desc">${data.desc}</p>
+                            `;
+
+                            // 분기 1: 일반 테이블/그리드 안내 방식 (호텔, 교통 정보 적용)
+                            if (data.type === "grid") {
+                                let rowsHtml = '';
+                                data.rows.forEach(row => {
+                                    rowsHtml += `
+                                        <div class="hotel-info-row">
+                                            <span class="hotel-info-label">${row.label}</span>
+                                            <span class="hotel-info-value">${row.value}</span>
+                                        </div>
+                                    `;
+                                });
+                                innerHtml += `<div class="hotel-info-grid">${rowsHtml}</div>`;
+                            } 
+                            // 분기 2: 관광명소 전용 세로 카드 리스트 레이아웃
+                            else if (data.type === "list") {
+                                let listHtml = '';
+                                data.items.forEach(item => {
+                                    listHtml += `
+                                        <div class="attraction-card">
+                                            <div class="attraction-top-row">
+                                                <span class="attraction-name">${item.name}</span>
+                                                <div class="attraction-img-wrapper">
+                                                    <img src="${item.img}" alt="${item.name}" onerror="this.style.display='none';">
+                                                </div>
+                                                <span class="attraction-distance">${item.dist}</span>
+                                            </div>
+                                            <a class="map-redirect-btn" href="https://www.google.com/maps/search/?api=1&query=${item.query}" target="_blank">
+                                                <svg viewBox="0 0 24 24">
+                                                    <path d="M12 2a8 8 0 0 0-8 8c0 5.25 8 12 8 12s8-6.75 8-12a8 8 0 0 0-8-8z"/>
+                                                    <circle cx="12" cy="10" r="3" fill="#6e5a4b"/>
+                                                </svg>
+                                                ${btnMapText}
+                                            </a>
+                                        </div>
+                                    `;
+                                });
+                                innerHtml += `<div class="attraction-list">${listHtml}</div>`;
+                            }
+                            // 분기 3: 맛집 전용 세로 카드 리스트 레이아웃
+                            else if (data.type === "food-list") {
+                                let listHtml = '';
+                                data.items.forEach(item => {
+                                    let imgsHtml = '';
+                                    item.imgs.forEach(imgSrc => {
+                                        imgsHtml += `
+                                            <div class="food-img-wrapper">
+                                                <img src="${imgSrc}" alt="${item.name} 메뉴" onerror="this.style.display='none';">
+                                            </div>
+                                        `;
+                                    });
+
+                                    listHtml += `
+                                        <div class="food-card">
+                                            <div class="food-top-row">
+                                                <span class="food-name">${item.name}</span>
+                                                <div class="food-images-container">
+                                                    ${imgsHtml}
+                                                </div>
+                                                <span class="food-distance">${item.dist}</span>
+                                            </div>
+                                            <div class="food-menu-row">
+                                                📌 <strong>${menuPrefixText}:</strong> ${item.menus}
+                                            </div>
+                                            <a class="map-redirect-btn" href="https://www.google.com/maps/search/?api=1&query=${item.query}" target="_blank">
+                                                <svg viewBox="0 0 24 24">
+                                                    <path d="M12 2a8 8 0 0 0-8 8c0 5.25 8 12 8 12s8-6.75 8-12a8 8 0 0 0-8-8z"/>
+                                                    <circle cx="12" cy="10" r="3" fill="#6e5a4b"/>
+                                                </svg>
+                                                ${btnMapText}
+                                            </a>
+                                        </div>
+                                    `;
+                                });
+                                innerHtml += `<div class="food-list">${listHtml}</div>`;
+                            }
+                            
+                            modalBodyContent.innerHTML = innerHtml;
+                            commonModal.style.display = 'flex';
+                        }, 100); 
+                    }
                 });
             });
             
-            backBtn.addEventListener('click', () => { history.back(); });
-            window.addEventListener('popstate', (event) => { closeDetailPage(); });
+            if (closeCommonBtn) {
+                closeCommonBtn.addEventListener('click', () => { commonModal.style.display = 'none'; });
+            }
+            window.addEventListener('click', (e) => {
+                if (e.target === commonModal) { commonModal.style.display = 'none'; }
+            });
         });
     </script>
 </body>
